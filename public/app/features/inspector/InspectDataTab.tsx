@@ -89,7 +89,10 @@ export const InspectDataTab = memo(function InspectDataTab({
   const transformedData = !data ? [] : shouldJoin && joined?.input === data ? joined.frames : data;
 
   const exportCsv = (dataFrames: DataFrame[]) => {
-    const dataFrame = dataFrames[dataFrameIndex];
+    // Use the same frame the table renders: the selected index can be stale (e.g. after transformations
+    // reduce the number of frames), in which case the table falls back to the first frame.
+    const index = !dataFrames[dataFrameIndex] ? 0 : dataFrameIndex;
+    const dataFrame = dataFrames[index];
 
     downloadDataFrameAsCsv(dataFrame, dataName, {}, transformId, excelCompatibilityMode);
   };
