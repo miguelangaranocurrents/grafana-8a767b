@@ -115,8 +115,10 @@ function fieldNameFallback(fields: Set<string>) {
       );
     };
   } else if (fields.has('Time') || fields.has('time')) {
+    // Only the legacy time column (named "Time" or "time") should be matched. Matching every
+    // time-typed field would also hide other time fields in the frame (e.g. a "created" column).
     fallback = (field: Field, frame: DataFrame) => {
-      return frame.meta?.typeVersion == null && field.type === FieldType.time;
+      return frame.meta?.typeVersion == null && field.type === FieldType.time && field.name.toLowerCase() === 'time';
     };
   }
 
